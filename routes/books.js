@@ -2,12 +2,6 @@ const express = require('express');
 const router = express.Router();
 const Book = require('../models/book');
 
-// Dummy data
-let books = [
-  new Book(1, '9786020302143', 'Bumi Manusia', 'Pramoedya A. Toer', true),
-  new Book(2, '9789791229187', 'Laskar Pelangi', 'Andrea Hirata', false)
-];
-
 // GET semua buku
 router.get('/semua', (req, res) => {
   res.json(books);
