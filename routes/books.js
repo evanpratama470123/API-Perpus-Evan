@@ -1,27 +1,35 @@
 const express = require('express');
 const router = express.Router();
-const Book = require('../models/book');
 const db = require('../config/db');
 
-// GET semua buku
-router.get('/semua', (req, res) => {
-  res.json(books);
-});
-
-// GET buku berdasarkan ID
-router.get('/:id', (req, res) => {
-  const id = parseInt(req.params.id); // Ambil id dari URL
-  const book = books.find(b => b.id === id); // Cari buku
-
-  if (book) {
-    res.json(book); // Jika ditemukan, kirim data buku
-  } else {
-    res.status(404).json({ message: 'Buku tidak ditemukan' }); // Jika tidak, kirim error
+// ✅ GET semua buku
+router.get('/semua', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM books');
+    res.json(rows);
+  } catch (err) {
+    console.error('❌ Error saat ambil semua buku:', err.message);
+    res.status(500).json({ error: 'Gagal ambil data buku' });
   }
 });
 
+// ✅ GET buku berdasarkan ID
+router.get('/:id', async (req, res) => {
+  const id = parseInt(req.params.id);
+  try {
+    const [rows] = await db.query('SELECT * FROM books WHERE id = ?', [id]);
+    if (rows.length > 0) {
+      res.json(rows[0]);
+    } else {
+      res.status(404).json({ message: 'Buku tidak ditemukan' });
+    }
+  } catch (err) {
+    console.error('❌ Error saat ambil buku:', err.message);
+    res.status(500).json({ error: 'Gagal ambil data buku' });
+  }
+});
 
-// POST buku baru
+// ✅ POST buku baru
 router.post('/tambah', async (req, res) => {
   const { isbn, title, author, status } = req.body;
 
@@ -44,28 +52,42 @@ router.post('/tambah', async (req, res) => {
   }
 });
 
-
-// DELETE buku
-router.delete('/hapus/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  books = books.filter(b => b.id !== id);
-  res.json({ message: 'Buku dihapus' });
-});
-
-// PUT update buku
-router.put('/edit/:id', (req, res) => {
+// ✅ PUT edit buku
+router.put('/edit/:id', async (req, res) => {
   const id = parseInt(req.params.id);
   const { isbn, title, author, status } = req.body;
-  const book = books.find(b => b.id === id);
 
-  if (book) {
-    book.isbn = isbn;
-    book.title = title;
-    book.author = author;
-    book.status = status;
-    res.json(book);
-  } else {
-    res.status(404).json({ message: 'Buku tidak ditemukan' });
+  try {
+    const [result] = await db.query(
+      'UPDATE books SET isbn = ?, title = ?, author = ?, status = ? WHERE id = ?',
+      [isbn, title, author, status, id]
+    );
+
+    if (result.affectedRows > 0) {
+      res.json({ message: 'Buku berhasil diperbarui' });
+    } else {
+      res.status(404).json({ message: 'Buku tidak ditemukan' });
+    }
+  } catch (err) {
+    console.error('❌ Error saat update buku:', err.message);
+    res.status(500).json({ error: 'Gagal update buku' });
+  }
+});
+
+// ✅ DELETE buku
+router.delete('/hapus/:id', async (req, res) => {
+  const id = parseInt(req.params.id);
+
+  try {
+    const [result] = await db.query('DELETE FROM books WHERE id = ?', [id]);
+    if (result.affectedRows > 0) {
+      res.json({ message: 'Buku dihapus' });
+    } else {
+      res.status(404).json({ message: 'Buku tidak ditemukan' });
+    }
+  } catch (err) {
+    console.error('❌ Error saat hapus buku:', err.message);
+    res.status(500).json({ error: 'Gagal hapus buku' });
   }
 });
 
