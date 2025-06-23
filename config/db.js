@@ -8,9 +8,4 @@ const pool = mysql.createPool({
   port: 3306
 });
 
-connection.connect((err) => {
-  if (err) throw err;
-  console.log('✅ Nyala CUY!!!');
-});
-
 module.exports = pool.promise;
