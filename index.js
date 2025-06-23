@@ -8,6 +8,7 @@ const booksRouter = require('./routes/books');
 app.use(express.json());
 
 // Routes
+app.use(express.json()); // <-- WAJIB untuk membaca JSON body
 app.use('/api/books', booksRouter);
 
 app.listen(port, () => {
