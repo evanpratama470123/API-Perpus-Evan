@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Book = require('../models/book');
+const db = require('../db');
 
 // GET semua buku
 router.get('/semua', (req, res) => {
