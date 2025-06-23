@@ -27,7 +27,7 @@ router.post('/tambah', async (req, res) => {
 
   try {
     const [result] = await db.query(
-      'INSERT INTO books (isbn, title, author, status) VALUES (?, ?, ?, ?)',
+      'INSERT INTO Book (isbn, title, author, status) VALUES (?, ?, ?, ?)',
       [isbn, title, author, status]
     );
 
