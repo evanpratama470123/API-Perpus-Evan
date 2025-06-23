@@ -1,6 +1,6 @@
 const mysql = require('mysql2');
 
-const connection = mysql.createConnection({
+const pool = mysql.createPool({
   host: 'mysql.railway.internal',
   user: 'root',
   password: 'fphIAFTGLyydRdsaByCAvwkksQWqhlLs',       // Ganti sesuai password kamu
@@ -13,4 +13,4 @@ connection.connect((err) => {
   console.log('✅ Nyala CUY!!!');
 });
 
-module.exports = connection;
+module.exports = pool.promise;

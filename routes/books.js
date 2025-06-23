@@ -23,13 +23,11 @@ router.get('/:id', (req, res) => {
 
 // POST buku baru
 router.post('/tambah', async (req, res) => {
-  console.log('Data Diterima:', req.body); // 👈 Cek ini tampil atau tidak
-
   const { isbn, title, author, status } = req.body;
 
   try {
     const [result] = await db.query(
-      'INSERT INTO Book (isbn, title, author, status) VALUES (?, ?, ?, ?)',
+      'INSERT INTO books (isbn, title, author, status) VALUES (?, ?, ?, ?)',
       [isbn, title, author, status]
     );
 
@@ -41,7 +39,7 @@ router.post('/tambah', async (req, res) => {
       status
     });
   } catch (err) {
-    console.error('❌ Error saat tambah buku:', err.message); // 👈 Ini penting
+    console.error('❌ Error saat tambah buku:', err.message);
     res.status(500).json({ error: 'Gagal tambah buku' });
   }
 });
